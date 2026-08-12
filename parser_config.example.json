@@ -1,0 +1,21 @@
+{
+  "last_settings": {
+    "queries": "Python",
+    "city": "Минск",
+    "salary": "",
+    "salary_currency": "BYN",
+    "experience": "Не имеет значения",
+    "schedule": "Любой",
+    "period": "За неделю",
+    "exclude": "",
+    "enabled_sites": [
+      "Rabota.by",
+      "Praca.by",
+      "Belmeta",
+      "GSZ.gov.by",
+      "HH.ru"
+    ],
+    "strict_salary": false,
+    "salary_mode": "Мягкий"
+  }
+}

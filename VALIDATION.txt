@@ -1,0 +1,43 @@
+Vacancy Parser Pro 4.9 — verification snapshot
+
+Checked locally in the build workspace:
+- Python compileall: PASS
+- Import job_scraper: PASS
+- Import problem_logging: PASS
+- Import vacancy_gui: PASS
+- Import vacancy_parser: PASS
+- Unit/regression tests: 63/63 PASS
+
+Changes driven by the user's successful 2026-08-12 18:34 session:
+- Search status: success; 162 unique vacancies.
+- Rabota.by: 39 accepted. The first five public-search pages were useful, but
+  the secondary SEO route redirected to generic /vacancies and added 250
+  unrelated/duplicate candidates. v4.9 now stops that redirect immediately.
+- Rabota accepted samples had empty employers. v4.9 adds semantic/link/text
+  fallback employer extraction.
+- Belmeta: 5 accepted. The page exposed both generic /vacansii and the useful
+  query-preserving /vacansii?q=Кладовщик&page=2 route, but the generic route was
+  selected first. v4.9 ranks the query-preserving route first.
+- GSZ.gov.by: 75 accepted from 500 cards. The portal did not expose a location
+  value under the exact old select names. v4.9 inspects changed region/district/
+  village select names/IDs and uses only numeric values actually present.
+
+New 4.9 verification coverage:
+- Belmeta pagination ranking prefers q=<profession>&page=N;
+- Belmeta search does not switch to generic whole-site feed;
+- Rabota employer is recovered when old data-qa attributes are absent;
+- Rabota secondary SEO pass stops on redirect to generic /vacancies;
+- GSZ location discovery accepts changed region-control name/id;
+- all previous regression tests remain green.
+
+Not verified in this environment:
+- live Belmeta/Rabota/GSZ behavior from the user's Windows/network after current
+  websites respond;
+- live GUI rendering on the user's Windows desktop.
+
+Next real session should be checked for:
+- Belmeta pages that keep q=<profession> and produce new vacancy IDs;
+- non-empty Rabota employer names in accepted samples;
+- absence of generic Rabota SEO pages in pages_detail;
+- GSZ location-control diagnostic note and, if the portal exposes a matching
+  numeric option, a server-side location filter.
