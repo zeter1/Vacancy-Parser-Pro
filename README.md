@@ -1,24 +1,24 @@
 # Vacancy Parser Pro
 
-Windows desktop vacancy aggregator built with Python and Tkinter. It searches multiple job sources, applies local filters, removes duplicates, exports results to Excel and writes structured diagnostics for troubleshooting source and parsing problems.
+Десктопный агрегатор вакансий для Windows, написанный на Python и Tkinter. Программа ищет вакансии сразу в нескольких источниках, применяет локальные фильтры, удаляет дубликаты, экспортирует результаты в Excel и ведёт структурированные диагностические логи для поиска проблем с источниками и парсингом.
 
-## Features
+## Возможности
 
-- Multi-source vacancy search from one desktop interface.
-- Search profiles for frequently used queries.
-- Filters by profession, city, minimum salary, experience, work format and publication period.
-- Three salary modes: no filtering, soft filtering and strict filtering.
-- Vacancy deduplication across sources.
-- Open vacancies directly in the browser.
-- Excel export.
-- Per-source statistics and fault isolation: one broken source does not stop the entire search.
-- Structured problem logs designed to make parser regressions and source changes easy to diagnose.
-- Network-free regression tests for parser logic.
-- Windows EXE build helper.
+- Поиск вакансий сразу по нескольким источникам из одного интерфейса.
+- Профили поиска для часто используемых запросов.
+- Фильтры по профессии, городу, минимальной зарплате, опыту, формату работы и периоду публикации.
+- Три режима фильтрации по зарплате: без фильтрации, мягкий и строгий.
+- Удаление дубликатов вакансий между разными источниками.
+- Открытие вакансий напрямую в браузере.
+- Экспорт результатов в Excel.
+- Статистика по каждому источнику и изоляция ошибок: сбой одного источника не останавливает весь поиск.
+- Структурированные логи проблем, упрощающие диагностику изменений сайтов и регрессий парсеров.
+- Регрессионные тесты логики парсеров, не требующие доступа к сети.
+- Скрипт для сборки Windows EXE.
 
-## Supported sources
+## Поддерживаемые источники
 
-The application currently includes adapters for:
+Сейчас приложение включает адаптеры для следующих сайтов:
 
 - Rabota.by
 - HH.ru
@@ -26,21 +26,21 @@ The application currently includes adapters for:
 - Belmeta
 - GSZ.gov.by
 
-External job sites can change markup, rate-limit requests or temporarily return server errors. Each adapter is therefore isolated and records its own diagnostics.
+Внешние сайты вакансий могут менять разметку страниц, ограничивать частоту запросов или временно возвращать серверные ошибки. Поэтому каждый адаптер работает изолированно и ведёт собственную диагностику.
 
-## Project structure
+## Структура проекта
 
-- `vacancy_parser.py` — application entry point.
-- `vacancy_gui.py` — Tkinter UI, profiles, status, statistics and Excel export.
-- `job_scraper.py` — networking, parsing, filtering, deduplication and source adapters.
-- `problem_logging.py` — structured per-search diagnostics.
-- `tests/` — network-free regression tests.
-- `parser_config.example.json` — example local configuration.
-- `build_exe.bat` — Windows EXE build helper.
+- `vacancy_parser.py` — точка входа приложения.
+- `vacancy_gui.py` — интерфейс Tkinter, профили поиска, состояние, статистика и экспорт в Excel.
+- `job_scraper.py` — сетевые запросы, парсинг, фильтрация, удаление дубликатов и адаптеры источников.
+- `problem_logging.py` — структурированная диагностика для каждого поиска.
+- `tests/` — регрессионные тесты без доступа к сети.
+- `parser_config.example.json` — пример локальной конфигурации.
+- `build_exe.bat` — скрипт для сборки Windows EXE.
 
-## Installation
+## Установка
 
-Requires a current Python 3 installation on Windows.
+Требуется актуальная версия Python 3 для Windows.
 
 ```powershell
 py -3 -m venv .venv
@@ -48,27 +48,27 @@ py -3 -m venv .venv
 python -m pip install -r requirements.txt
 ```
 
-## Run
+## Запуск
 
 ```powershell
 python vacancy_parser.py
 ```
 
-or double-click `run.bat`.
+Или запустите `run.bat` двойным щелчком.
 
-## Salary filtering
+## Фильтрация по зарплате
 
-`Мин. доход` works together with `Фильтр зарплаты`:
+Параметр `Мин. доход` работает совместно с настройкой `Фильтр зарплаты`:
 
-- **Не фильтровать** — vacancies are not rejected by salary.
-- **Мягкий** — vacancies without salary remain visible; salary ranges may reach the requested minimum.
-- **Строгий** — the salary must be known and its guaranteed lower bound must be at least the requested minimum.
+- **Не фильтровать** — вакансии не исключаются по уровню зарплаты.
+- **Мягкий** — вакансии без указанной зарплаты остаются в результатах; диапазон зарплаты может достигать заданного минимума.
+- **Строгий** — зарплата должна быть указана, а её гарантированная нижняя граница должна быть не меньше заданного минимума.
 
-Soft mode is useful when recall is more important than strict salary verification.
+Мягкий режим полезен, когда важнее получить больше потенциально подходящих вакансий, чем строго проверять зарплату.
 
-## Problem diagnostics
+## Диагностика проблем
 
-Every search creates its own session directory inside `Логи проблем/`.
+Каждый поиск создаёт отдельную папку сессии внутри каталога `Логи проблем/`.
 
 ```text
 Логи проблем/
@@ -82,34 +82,34 @@ Every search creates its own session directory inside `Логи проблем/`
     └── 06_итог_проверки_ссылок.txt
 ```
 
-The diagnostics include per-source page counts, fetched and accepted vacancy counts, filter reasons, warnings, HTTP/network failures, bounded accepted/rejected examples and link-opening information. Secrets such as OAuth tokens are not written to the logs.
+Диагностика содержит количество обработанных страниц по каждому источнику, число найденных и принятых вакансий, причины отсеивания по фильтрам, предупреждения, HTTP- и сетевые ошибки, ограниченные примеры принятых и отклонённых вакансий, а также информацию об открытии ссылок. Секретные данные, например OAuth-токены, в логи не записываются.
 
-## Tests
+## Тесты
 
 ```powershell
 python -m unittest discover -s tests -v
 ```
 
-The regression suite is designed to run without live network access.
+Набор регрессионных тестов рассчитан на работу без доступа к интернету.
 
-## Build EXE
+## Сборка EXE
 
-Run:
+Запустите:
 
 ```text
 build_exe.bat
 ```
 
-The executable is created in `dist/`.
+Готовый исполняемый файл будет создан в каталоге `dist/`.
 
-## Notes about external sources
+## Особенности внешних источников
 
-Rabota.by / HH may restrict anonymous API traffic, so the project includes bounded public-page fallback logic. GSZ.gov.by has also shown certificate-chain and server-side failures in real sessions; compatibility handling is scoped to that source instead of disabling TLS globally.
+Rabota.by / HH могут ограничивать анонимный доступ к API, поэтому в проекте предусмотрена ограниченная резервная логика получения данных с публичных страниц. В реальных сессиях GSZ.gov.by также демонстрировал проблемы с цепочкой сертификатов и серверные ошибки; совместимость с такими ситуациями реализована только для этого источника, без глобального отключения проверки TLS.
 
-## Changelog
+## История изменений
 
-Detailed release history and parser fixes are kept in [CHANGELOG.md](CHANGELOG.md).
+Подробная история версий и исправлений парсеров находится в файле [CHANGELOG.md](CHANGELOG.md).
 
-## License
+## Лицензия
 
-No license has been selected yet. Unless a license is added later, the repository remains source-available under the default copyright rules.
+Лицензия пока не выбрана. Пока она не будет добавлена, исходный код остаётся доступным для просмотра и подпадает под стандартные правила авторского права.
