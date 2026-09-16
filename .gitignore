@@ -16,9 +16,13 @@ env/
 .coverage
 htmlcov/
 
-# Build artifacts
+# Reproducible build workspace and artifacts
+.build/
+.build-cache/
 build/
 dist/
+dist_previous/
+build_logs/
 *.spec
 *.exe
 

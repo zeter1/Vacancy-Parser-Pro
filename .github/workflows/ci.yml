@@ -21,7 +21,7 @@ concurrency:
 jobs:
   verify:
     runs-on: windows-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     env:
       PYTHONUTF8: "1"
       PYTHONIOENCODING: "utf-8"
@@ -50,15 +50,36 @@ jobs:
       - name: Run source self-test
         run: python vacancy_parser.py --self-test
 
-      - name: Build and smoke-test packaged EXE
+      - name: Build and verify full Windows distribution
         if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && contains(github.event.head_commit.message, '[package]'))
         shell: cmd
         run: build_exe.bat --ci
 
-      - name: Verify packaged files
+      - name: Validate packaging metadata
         if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && contains(github.event.head_commit.message, '[package]'))
         shell: pwsh
         run: |
-          if (-not (Test-Path 'dist\Vacancy Parser Pro.exe')) { throw 'EXE was not created' }
-          if (-not (Test-Path 'dist\icon.ico')) { throw 'Runtime icon was not copied next to EXE' }
-          Get-Item 'dist\Vacancy Parser Pro.exe','dist\icon.ico' | Format-Table Name,Length,LastWriteTime
+          $required = @(
+            'dist/Vacancy Parser Pro.exe',
+            'dist/icon.ico',
+            'dist/Vacancy-Parser-Pro-portable-x64.zip',
+            'dist/build_info.json',
+            'dist/SHA256SUMS.txt',
+            'build_logs/last_build_summary.json'
+          )
+          foreach ($path in $required) { if (-not (Test-Path $path)) { throw "Missing packaging artifact: $path" } }
+          $info = Get-Content 'dist/build_info.json' -Raw | ConvertFrom-Json
+          if ($info.app -ne 'Vacancy Parser Pro') { throw 'Unexpected app in build_info.json' }
+          $summary = Get-Content 'build_logs/last_build_summary.json' -Raw | ConvertFrom-Json
+          if ($summary.status -ne 'success') { throw "Packaging summary status: $($summary.status)" }
+          Get-FileHash 'dist/Vacancy Parser Pro.exe' -Algorithm SHA256
+          Get-FileHash 'dist/Vacancy-Parser-Pro-portable-x64.zip' -Algorithm SHA256
+
+      - name: Upload verified Windows distribution
+        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && contains(github.event.head_commit.message, '[package]'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: Vacancy-Parser-Pro-portable-x64
+          path: dist/
+          if-no-files-found: error
+          retention-days: 14
