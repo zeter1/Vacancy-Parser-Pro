@@ -16,6 +16,7 @@ $App = 'Vacancy Parser Pro'
 $Version = '4.9'
 $NumericVersion = '4.9.0.0'
 $Entry = 'vacancy_parser.py'
+$IconPath = Join-Path $Root 'icon.ico'
 $PythonSeries = '3.13'
 $PyInstallerVersion = '6.22.3'
 $HooksVersion = '2026.7'
@@ -242,7 +243,7 @@ function New-Package($Metadata) {
     $stageDist = Join-Path $Work 'stage-dist'; $workPath = Join-Path $Work 'pyinstaller-work'; $specPath = Join-Path $Work 'spec'
     Remove-Safe $stageDist; if (-not $Fast) { Remove-Safe $workPath }; Remove-Safe $specPath
     New-Item -ItemType Directory -Force -Path $stageDist,$workPath,$specPath | Out-Null
-    $arguments = @('-m','PyInstaller','--noconfirm','--onefile','--windowed','--noupx','--name',$App,'--icon','icon.ico','--distpath',$stageDist,'--workpath',$workPath,'--specpath',$specPath,'--manifest',$Metadata.manifest,'--version-file',$Metadata.version)
+    $arguments = @('-m','PyInstaller','--noconfirm','--onefile','--windowed','--noupx','--name',$App,'--icon',$IconPath,'--distpath',$stageDist,'--workpath',$workPath,'--specpath',$specPath,'--manifest',$Metadata.manifest,'--version-file',$Metadata.version)
     if (-not $Fast) { $arguments += '--clean' }
     $arguments += $Entry
     Invoke-Native $BuildPython $arguments 'PyInstaller package'
@@ -255,7 +256,7 @@ function New-Package($Metadata) {
 function Test-Package([string]$Exe) {
     $script:Stage = 'packaged-self-test'
     $directory = Split-Path $Exe -Parent
-    Copy-Item 'icon.ico' (Join-Path $directory 'icon.ico') -Force
+    Copy-Item $IconPath (Join-Path $directory 'icon.ico') -Force
     Invoke-Timed $Exe @('--self-test') 90 $directory
 
     $script:Stage = 'portable-folder-test'
@@ -263,7 +264,7 @@ function Test-Package([string]$Exe) {
     New-Item -ItemType Directory -Force -Path $temp | Out-Null
     try {
         Copy-Item $Exe (Join-Path $temp "$App.exe")
-        Copy-Item 'icon.ico' (Join-Path $temp 'icon.ico')
+        Copy-Item $IconPath (Join-Path $temp 'icon.ico')
         Invoke-Timed (Join-Path $temp "$App.exe") @('--self-test') 90 $temp
     } finally { Remove-Safe $temp }
 }
@@ -274,7 +275,7 @@ function Publish-Package([string]$Exe) {
     Remove-Safe $package; Remove-Safe $final
     New-Item -ItemType Directory -Force -Path $package,$final | Out-Null
     $packagedExe = Join-Path $package "$App.exe"
-    Copy-Item $Exe $packagedExe; Copy-Item 'icon.ico' (Join-Path $package 'icon.ico')
+    Copy-Item $Exe $packagedExe; Copy-Item $IconPath (Join-Path $package 'icon.ico')
     $exeHash = (Get-FileHash $packagedExe -Algorithm SHA256).Hash.ToLowerInvariant()
     $script:GitCommit = Get-GitCommit
     [ordered]@{schema=1;app=$App;app_version=$Version;artifact_type='onefile-portable-x64';built_at_utc=[DateTime]::UtcNow.ToString('o');git_commit=$GitCommit;python=$BasePython.version;pyinstaller=$PyInstallerVersion;architecture='x64';exe="$App.exe";exe_sha256=$exeHash;resources=@('icon.ico');verification=@('compile','unit-tests','source-self-test','packaged-self-test','portable-folder-test','zip-extract-self-test')} | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $package 'build_info.json') -Encoding UTF8
@@ -295,7 +296,7 @@ function Publish-Package([string]$Exe) {
 
     $zipHash = (Get-FileHash $zip -Algorithm SHA256).Hash.ToLowerInvariant()
     Copy-Item $packagedExe (Join-Path $final "$App.exe")
-    Copy-Item 'icon.ico' (Join-Path $final 'icon.ico')
+    Copy-Item $IconPath (Join-Path $final 'icon.ico')
     Copy-Item (Join-Path $package 'build_info.json') (Join-Path $final 'build_info.json')
     Copy-Item $zip (Join-Path $final $zipName)
     @("$exeHash *$App.exe", "$zipHash *$zipName") | Set-Content (Join-Path $final 'SHA256SUMS.txt') -Encoding ASCII
