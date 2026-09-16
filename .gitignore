@@ -5,6 +5,7 @@ __pycache__/
 
 # Virtual environments
 .venv/
+.build-venv/
 venv/
 env/
 
@@ -23,6 +24,7 @@ dist/
 
 # Local application state
 parser_config.json
+saved_params.json
 Логи проблем/
 *.log
 

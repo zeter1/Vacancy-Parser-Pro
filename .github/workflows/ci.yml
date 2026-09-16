@@ -9,6 +9,7 @@ on:
     branches: [main]
     paths-ignore:
       - "**/*.md"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -20,8 +21,10 @@ concurrency:
 jobs:
   verify:
     runs-on: windows-latest
+    timeout-minutes: 20
     env:
       PYTHONUTF8: "1"
+      PYTHONIOENCODING: "utf-8"
     steps:
       - uses: actions/checkout@v7
 
@@ -43,3 +46,19 @@ jobs:
 
       - name: Run unit tests
         run: python -m unittest discover -s tests -v
+
+      - name: Run source self-test
+        run: python vacancy_parser.py --self-test
+
+      - name: Build and smoke-test packaged EXE
+        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && contains(github.event.head_commit.message, '[package]'))
+        shell: cmd
+        run: build_exe.bat --ci
+
+      - name: Verify packaged files
+        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && contains(github.event.head_commit.message, '[package]'))
+        shell: pwsh
+        run: |
+          if (-not (Test-Path 'dist\Vacancy Parser Pro.exe')) { throw 'EXE was not created' }
+          if (-not (Test-Path 'dist\icon.ico')) { throw 'Runtime icon was not copied next to EXE' }
+          Get-Item 'dist\Vacancy Parser Pro.exe','dist\icon.ico' | Format-Table Name,Length,LastWriteTime
