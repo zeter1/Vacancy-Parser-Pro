@@ -1,5 +1,7 @@
 # AGENTS.md
 
+Project overview and commands: [README.md](README.md). Documentation entry point: [docs/README.md](docs/README.md); it links the established overview rather than duplicating it.
+
 ## Project goal
 
 Maintain a reliable Windows desktop vacancy aggregator with high recall, transparent filtering and diagnostic logs that make broken sources easy to identify.

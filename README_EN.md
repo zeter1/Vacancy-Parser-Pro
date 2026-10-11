@@ -6,6 +6,16 @@
 
 The project is built around independent source adapters: a failure or markup change on one site should not stop the entire search. Structured diagnostic sessions are created for network failures and parser changes.
 
+## Download and run on Windows
+
+> Windows builds are marked **Prerelease**: they are preliminary builds for testing. A release build may differ from the current source.
+
+1. Open [GitHub Releases](https://github.com/zeter1/Vacancy-Parser-Pro/releases) and expand **Assets** for the build you choose.
+2. Download `Vacancy-Parser-Pro-portable-x64.zip` and extract the entire archive.
+3. Run `Vacancy Parser Pro.exe` from the archive and enter your search criteria.
+
+A standalone EXE is also available as `Vacancy.Parser.Pro.exe` in Assets. Python is included. Searching requires internet access; sites may restrict access or change their markup. `SHA256SUMS.txt` is published beside the files. Offline tests do not establish live source availability.
+
 ## What the project demonstrates
 
 - independent adapters for external sources;
@@ -41,7 +51,7 @@ The project is built around independent source adapters: a failure or markup cha
 
 External sites can change their HTML, APIs, and access restrictions, so individual adapters may require maintenance over time.
 
-## Installation
+## Installation from source
 
 1. Install a current Python 3 version for Windows.
 2. Download the project with **Code → Download ZIP** or Git:
@@ -59,7 +69,7 @@ py -3 -m venv .venv
 python -m pip install -r requirements.txt
 ```
 
-## Launch
+## Launch from source
 
 ```powershell
 python vacancy_parser.py
