@@ -1,5 +1,9 @@
 # Changelog
 
+### 2026-10-11T10:41:42+03:00 — Контакты разработчика в README
+
+- Добавлено: в самом низу README размещены ссылки на почту, Telegram и LinkedIn разработчика без подписей сервисов и значков.
+
 ## 4.9
 
 - Preserved the active Belmeta profession query when choosing next-page links.

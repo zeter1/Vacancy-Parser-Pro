@@ -143,3 +143,9 @@ build_exe.bat
 ## Лицензия
 
 Открытая лицензия пока не выбрана. Исходный код доступен для просмотра как часть портфолио и для ознакомления с реализацией.
+
+## Контакты для связи с разработчиком
+
+- [zeter11@gmail.com](mailto:zeter11@gmail.com)
+- [https://t.me/zeter1](https://t.me/zeter1)
+- [https://www.linkedin.com/in/zeter/](https://www.linkedin.com/in/zeter/)
